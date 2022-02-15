@@ -19,11 +19,108 @@ Static distance form will be used for stack
 referencing. 
 
 ### Datatypes
-There will be 2 primitive datatypes.
+There will be 3 primitive datatypes.
 * `byte` 8-bit value.  (Character or Boolean)
 * `quad` 32-bit value. (Signed Integer or Float)
+* `addr` 64-bit value. (A Pointer to a block of data)
 
-The final datatype will be a `blck`.
+The `addr` datatype alludes to complex datastructures.
+This is done through the use of schemas, images, and arrays 
+which restrict how a user can read from and write to memory.
+
+A `schema` defines the structure of a block of data known as an
+`image`. A `schema` is itself an `image` which follows the following
+root `schema` design.
+
+```
+_schema  : addr (Pointer to this very schema)
+_scid    : quad (Schema ID, will be 5 for the root schema)
+_name    : addr (The name of the schema)
+_fields  : addr (Address of an array of bytes describing each field)
+```
+Note that these fields will not actually have their names stored.
+Instead the user will index into them with a number. 
+Underscores denote fields which are only readeable by the user, not writeable.
+
+An `array` is a special type which follows no static `schema`.
+The structure of an `array` is as follows...
+
+```
+_ctype : quad (The type held in this array)
+_len   : quad (The number of cells in this array)
+val[0] : _ctype
+val[1] : _ctype
+   :
+val[_len - 1] : _ctype
+```
+
+Inorder to specify types to the interpreter, here are the constant type codes.
+* `0x0001` - `byte`
+* `0x0002` - `quad`
+* `0x0003` - `addr`
+* `0x0004` - `array`
+* `0x0005` - The root `schema`
+* `0x....` - User defined `schema`
+
+In order to make any of the above codes represent a read only 
+
+
+
+
+
+<!-- A `schema` defines the structure of a block of data.
+All blocks of data will contain a field `_schema` which points
+to the block's defining structure. A block of data created 
+using a `schema` is known as an `image`.
+
+There is an `array` type for each of the 3 above primitive types.
+* `byte[]`
+* `quad[]`
+* `addr[]`
+
+Since arrays can have different lengths. The size of an `array` 
+data block may vary depending on which `array` is being indexed.
+
+Thus, an `array` has no constant defining `schema`. Instead,
+an `array`'s structure always looks like this...
+
+```
+_schema : addr (Always NULL)
+_ctype  : byte (The type stored in this array)
+_length : quad (The number of elements stored in this array)
+val[0]  : ctype
+val[1]  : ctype
+   :
+val[length - 1] : ctype
+```
+
+A `schema` data block itself follows the following self 
+referential `schema`.
+
+```
+_schema  : addr (Pointer to this very schema)
+_name    : addr (The name of the schema)
+_fields  : addr (Address of an array of bytes describing each field)
+```
+
+Each `byte` in `_fields` will give the type of a field (`byte`,
+`quad`, or `addr`) and its permissions. The underscores in the examples
+above denote fields which are only readable by the user. -->
+
+### Procedures
+
+```
+
+```
+
+
+
+
+
+
+
+
+<!-- The final datatype will be a `blck`.
 
 This datatype will represent a variable size block of data.
 Users will have the ability to index into a `blck` as long as
@@ -33,8 +130,40 @@ as a `quad`.
 
 In practice, `blck` will be a 64-bit address.
 
+
+
 ### Procedures and The Stack
-A procedure will be a `blck` with a simple structure.
+A procedure is a `blck` will follow the following structure.
+```
+size  : quad (Size of this block)
+name  : blck (The name of the procedure)
+dsize : quad (The size of the procedure's data block)
+rsize : quad (The size of the procedure's return block)
+text  : blck (The code)
+```
+
+If we can index in anyway into a block... how will we be protected
+from creating faulty addresses/values??
+How will we know where valid values lie in a block??
+Maybe involve some form of structure and array data values...
+both of which are blocks??
+
+Upon calling a procedure, an activation record will be created
+to manage the call. The activation record will be a `blck` with
+the following structure.
+
+```
+size  : quad (Size of this block)
+pblck : blck (The called procedure block)
+cblck : blck (The caller AR block)
+rreg  : blck (The return register)
+pc    : quad (The program counter)
+dblck : blck (The data block for the AR)
+rblck : blck (The return block for the AR)
+``` -->
+
+
+<!-- A procedure will be a `blck` with a simple structure.
 
 ```
 size  : __ __ __ __     (Size of the function block)
@@ -52,16 +181,16 @@ cblck : __ __ __ __ __ __ __ __
 pblck : __ __ __ __ __ __ __ __ 
 rreg  : __ __ __ __ __ __ __ __
 data  : __ ... __
-```
+``` -->
 
 
 
 
-Procedures will be the building blocks of what the interpreter
+<!-- Procedures will be the building blocks of what the interpreter
 can process. A procedure will be a self contained set of 
 instructions which manipulates a constant sized `blck`. 
 The `blck` will contain an areas for arguments, local variables, and
-a return value. 
+a return value.  -->
 
 
 
