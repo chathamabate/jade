@@ -19,14 +19,57 @@ Static distance form will be used for stack
 referencing. 
 
 ### Datatypes
-There will be 3 primitive datatypes.
+There will be 3 datatypes.
 * `byte` 8-bit value.  (Character or Boolean)
 * `quad` 32-bit value. (Signed Integer or Float)
-* `addr` 64-bit value. (A Pointer to a block of data)
+* `array_p` 64-bit address to an `array`.
+* `image_p` 64-bit address to an `image`.
 
-The `addr` datatype alludes to complex datastructures.
-This is done through the use of schemas, images, and arrays 
-which restrict how a user can read from and write to memory.
+These types also come with corresponding type codes for use later on. 
+```
+0x01 : BYTE_T
+0x02 : QUAD_T
+0x03 : ARRAY_P_T
+0x04 : IMAGE_P_T
+```
+
+## HERE
+
+`images` and `array` are the only 2 non primitive types in `jade`.
+The can occupy arbitrarily sized blocks of memory.
+The values are always accessed through the use of an `addr` pointing 
+the top of the `image` or `array`.
+
+To determine which type of value is being accessed when using an `addr`,
+a constant code will always come at the top of either of any `image` or 
+`array`.
+
+```
+0x01 : ARRAY_VT (VT for variable type)
+0x02 : IMAGE_VT
+```
+
+All `arrays` follow the following structure....
+```
+0x01   : byte (ARRAY_VT code)
+_ctype : quad (The type held in this array)
+_len   : quad (The number of cells in this array)
+val[0] : _ctype
+val[1] : _ctype
+   :
+val[_len - 1] : _ctype
+```
+
+All `images` follow the following structure...
+```
+0x02     : bytes (IMAGE_VT code)
+_schema  : addr (Pointer to defining schema)
+field[0] : T0
+field[1] : T1
+   :
+field[N-1] : TN-1
+```
+
 
 A `schema` defines the structure of a block of data known as an
 `image`. A `schema` is itself an `image` which follows the following
@@ -42,17 +85,7 @@ Note that these fields will not actually have their names stored.
 Instead the user will index into them with a number. 
 Underscores denote fields which are only readeable by the user, not writeable.
 
-An `array` is a special type which follows no static `schema`.
-The structure of an `array` is as follows...
 
-```
-_ctype : quad (The type held in this array)
-_len   : quad (The number of cells in this array)
-val[0] : _ctype
-val[1] : _ctype
-   :
-val[_len - 1] : _ctype
-```
 
 Inorder to specify types to the interpreter, here are the constant type codes.
 * `0x0001` - `byte`
@@ -62,7 +95,15 @@ Inorder to specify types to the interpreter, here are the constant type codes.
 * `0x0005` - The root `schema`
 * `0x....` - User defined `schema`
 
-In order to make any of the above codes represent a read only 
+
+### Procedures
+Procedures will be the by code can be made reuseable.
+The low level interpreter will use static distance coordinates
+for arguments and for fields in static memory.
+
+```
+
+```
 
 
 
@@ -106,14 +147,6 @@ _fields  : addr (Address of an array of bytes describing each field)
 Each `byte` in `_fields` will give the type of a field (`byte`,
 `quad`, or `addr`) and its permissions. The underscores in the examples
 above denote fields which are only readable by the user. -->
-
-### Procedures
-
-```
-
-```
-
-
 
 
 
