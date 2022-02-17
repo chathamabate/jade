@@ -123,4 +123,29 @@ All data in the `procedure` will be managed through the `procedure`'s
 
 The *ith* field in the `data image` will be denoted `d.i`.
 
-#### Memory Access
+Comments will start with a `#`.
+
+Statements end with a `;`.
+
+
+#### Memory 
+
+These instructions correspond to the manipulation of data and the usage of pointers. 
+(i.e. `image_p` and `array_p`)
+```
+# Moving data
+d.i <- d.j;    # d.j is stored at d.i.
+
+# Loading immediates
+d.i <- 0x0000; 
+
+# Reading from pointers
+d.i <- d.j.k;  # If d.j is an image_p, get its kth field, store in d.i.
+d.i <- d.j[k]; # If d.j is an array_p, get its kth element, store in d.i.
+
+# Storing to pointers
+d.j.k <- d.i;  # If d.j is an image_p, store d.i in its kth field.
+d.j[k] <- d.i; # If d.j is an array_p, store d.i in its kth place.
+```
+
+
