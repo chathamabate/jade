@@ -105,9 +105,22 @@ When a procedure is called, an *Activation Record* or `ar` is created to hold al
 _schema : image_p
 field[0] "parent_proc" : image_p, R (Procedure from which this AR was made)
 field[1] "parent_ar"   : image_p, R (The AR of the calling AR)
-field[2] "data"        : image_p, R (The AR's data block)
+field[2] "data"        : image_p, R (The AR's data image)
 field[3] "pc"          : quad, R (The index of the next instruction to run)
 ```
 
 __NOTE :__ `pc` is marked as readonly. However, its value will be changed during 
 execution (just not by the user).
+
+### Bytecode and Instruction Set
+
+As mentioned above, every line of code will belong to a parental
+`procedure`. There will be no freestanding code.
+Thus, all instructions will take this into account.
+
+All data in the `procedure` will be managed through the `procedure`'s 
+`data image`.
+
+The *ith* field in the `data image` will be denoted `d.i`.
+
+#### Memory Access
