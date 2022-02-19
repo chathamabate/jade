@@ -19,7 +19,7 @@ Static distance form will be used for stack
 referencing. 
 
 ### Datatypes
-There will be 5 datatypes.
+There will be 4 datatypes.
 * `byte` 8-bit value.  (Character or Boolean)
 * `quad` 32-bit value. (Signed Integer or Float)
 * `array_p` 64-bit address to an `array`.
@@ -121,14 +121,32 @@ Thus, all instructions will take this into account.
 All data in the `procedure` will be managed through the `procedure`'s 
 `data image`.
 
-The *ith* field in the `data image` will be denoted `d.i`.
+The below specification will list every valid bytecode instruction
+for procedures. The first `byte` of each instruction will always be the opcode.
+The rest will be the operands.  
 
-Comments will start with a `#`.
-
-Statements end with a `;`.
-
+#### Notation
+* `b#` denotes a `byte` operand.
+* `q#` denotes a `quad` operand.
+* `ap#` denotes an `array_p` operand.
+* `ip#` denotes an `image_p` operand.
+* `d` denotes the data image of the procedure call.
+* If `ap` is an `array_p`, `ap[i]` denotes the *ith* entry of the `array` pointed to by `ap`.
+* If `ip` is an `image_p`, `ip.i` denotes the *ith* field of an `image` pointed to by `ip`.
 
 #### Memory 
+* __0x00__ : `mov_b q1 q2` 
+  * Move the `byte` at `d.(q2)` into the `byte` field `d.(q1)`.
+* __0x01__ : `mov_q q1 q2`
+  * Move the `quad` at `d.(q2)` into the `quad` field `d.(q2)`.
+* __0x02__ : `mov_ap q1 q2`
+  * Move the `array_p` at `d.(q2)` into the `array_p` field `d.(q2)`.
+* __0x03__ : `mov_ip q1 q2`
+  * Move the `image_p` at `d.(q2)` into the `image_p` field `d.(q2)`.
+
+
+
+<!-- 
 
 These instructions correspond to the manipulation of data and the usage of pointers. 
 (i.e. `image_p` and `array_p`)
@@ -147,5 +165,5 @@ d.i <- d.j[k]; # If d.j is an array_p, get its kth element, store in d.i.
 d.j.k <- d.i;  # If d.j is an image_p, store d.i in its kth field.
 d.j[k] <- d.i; # If d.j is an array_p, store d.i in its kth place.
 ```
-
+ -->
 
