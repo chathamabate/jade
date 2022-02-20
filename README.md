@@ -11,15 +11,55 @@ The higher level language will be transformed into
 this intermediate representation before being run.
 
 ## IR and Interpretation
-The interpreter will have some notion of a stack. 
-This will store activation records of called functions.
-There will also be dynamic memory.
 
-Static distance form will be used for stack 
-referencing. 
+The below information with specify the `jade` Low level language (The `j3l`)
+and how it is interpreted.
 
-### Datatypes
-There will be 4 datatypes.
+### Code Sections
+
+A `j3l` file will have multiple ordered sections.
+These sections are as follows...
+```
+typedefs   (0x00)
+    - Where all types are defined.
+procedures (0x01)
+    - Where all procedures are defined.
+main       (0x02)
+    - The program's entry point.
+```
+
+To declare a section starting, use the `sect` instruction.
+```
+sect <b1>
+    sect - 0x00
+    b1   - One of the above 3 section codes.
+```
+
+
+### Datatypes and Typedefs
+
+There will be 2 primitive datatypes.
+* `byte` 8-bit value. (Character or Boolean)
+* `quad` 32-bit value. (Signed Integer or Float)
+
+The above datatypes will have corresponding `quad` type codes.
+The assembler or compiler will use these codes for static type checking.
+
+```
+void : 0x0000 (Nothing type for later usage)
+byte : 0x0001
+quad : 0x0002
+```
+This list of datatypes codes can be added onto through the use of composite 
+datatypes. These datatypes will be defined at the top
+
+
+
+
+
+
+
+<!-- There will be 4 datatypes.
 * `byte` 8-bit value.  (Character or Boolean)
 * `quad` 32-bit value. (Signed Integer or Float)
 * `array_p` 64-bit address to an `array`.
@@ -142,7 +182,7 @@ The rest will be the operands.
 * __0x02__ : `mov_ap q1 q2`
   * Move the `array_p` at `d.(q2)` into the `array_p` field `d.(q2)`.
 * __0x03__ : `mov_ip q1 q2`
-  * Move the `image_p` at `d.(q2)` into the `image_p` field `d.(q2)`.
+  * Move the `image_p` at `d.(q2)` into the `image_p` field `d.(q2)`. -->
 
 
 
